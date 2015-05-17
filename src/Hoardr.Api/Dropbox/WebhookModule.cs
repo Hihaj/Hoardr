@@ -17,10 +17,6 @@ namespace Hoardr.Api.Dropbox
 
             Get["/"] = _ =>
             {
-                if (!requestVerifier.VerifyRequest(Request))
-                {
-                    return HttpStatusCode.Unauthorized;
-                }
                 var challenge = (string)Request.Query["challenge"];
                 if (string.IsNullOrEmpty(challenge))
                 {
