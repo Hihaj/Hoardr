@@ -33,7 +33,7 @@ namespace Hoardr.Api.Dropbox
             {
                 return false;
             }
-            var bodyHash = request.Body.AsString().CalculateHmacSha256Hash(_settings.ApiSecret);
+            var bodyHash = request.Body.AsString().CalculateHash(_settings.ApiSecret);
             return string.Equals(bodyHash, requestSignature, StringComparison.Ordinal);
         }
     }
