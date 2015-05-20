@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Nancy;
 using Nancy.Extensions;
 
-namespace Hoardr.Api.Dropbox
+namespace Hoardr.Api
 {
     public interface IRequestVerifier
     {
@@ -15,9 +12,9 @@ namespace Hoardr.Api.Dropbox
 
     public class RequestVerifier : IRequestVerifier
     {
-        private readonly DropboxSettings _settings;
+        private readonly AppSettings _settings;
 
-        public RequestVerifier(DropboxSettings settings)
+        public RequestVerifier(AppSettings settings)
         {
             _settings = settings;
         }
@@ -33,7 +30,7 @@ namespace Hoardr.Api.Dropbox
             {
                 return false;
             }
-            var bodyHash = request.Body.AsString().CalculateHash(_settings.ApiSecret);
+            var bodyHash = request.Body.AsString().CalculateHash(_settings.DropboxApiSecret);
             return string.Equals(bodyHash, requestSignature, StringComparison.Ordinal);
         }
     }

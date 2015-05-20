@@ -4,15 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{BFDF1194-118D-4835-956D-D345EB904E99}</ProjectGuid>
+    <ProjectGuid>{F8CC74B3-B2A5-422B-80D1-3D97587BF663}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Hoardr.FileJob</RootNamespace>
-    <AssemblyName>Hoardr.FileJob</AssemblyName>
+    <RootNamespace>Hoardr.DeltaJob</RootNamespace>
+    <AssemblyName>Hoardr.DeltaJob</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <NuGetPackageImportStamp>9cb338ff</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>ad20cd2a</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -61,7 +61,6 @@
     </Reference>
     <Reference Include="Refit">
       <HintPath>..\packages\refit.2.2.1\lib\Net45\Refit.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -89,8 +88,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppSettings.cs" />
-    <Compile Include="DropboxFileMetadata.cs" />
-    <Compile Include="IDropboxContentApi.cs" />
+    <Compile Include="DeltaCursorEntity.cs" />
+    <Compile Include="IDropboxApi.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RefitStubs.cs" />

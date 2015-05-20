@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Web;
-using Hoardr.Api.Dropbox;
+using Microsoft.WindowsAzure.Storage;
 using Nancy;
 using Nancy.Bootstrapper;
 using Nancy.TinyIoc;
@@ -18,19 +17,10 @@ namespace Hoardr.Api
         {
             base.ConfigureApplicationContainer(container);
 
+            var appSettings = new AppSettings();
+            container.Register(appSettings);
+            container.Register(CloudStorageAccount.Parse(appSettings.AzureStorageConnectionString));
             container.Register<JsonSerializer, CustomJsonSerializer>();
-
-            var dropboxSettings = container.Resolve<DropboxSettings>();
-            container.Register<IDropboxApi>((c, npo) =>
-                RestService.For<IDropboxApi>(new HttpClient(new AuthenticatedHttpClientHandler(dropboxSettings.AccessToken))
-                {
-                    BaseAddress = new Uri(dropboxSettings.ApiBaseAddress)
-                }));
-            container.Register<IDropboxContentApi>((c, npo) =>
-                RestService.For<IDropboxContentApi>(new HttpClient(new AuthenticatedHttpClientHandler(dropboxSettings.AccessToken))
-                {
-                    BaseAddress = new Uri(dropboxSettings.ContentApiBaseAddress)
-                }));
         }
     }
 }

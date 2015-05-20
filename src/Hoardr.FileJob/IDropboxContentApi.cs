@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Refit;
 
-namespace Hoardr.Api.Dropbox
+namespace Hoardr.FileJob
 {
     public interface IDropboxContentApi
     {

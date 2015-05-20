@@ -10,23 +10,22 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Refit;
 
-namespace Hoardr.Api.Dropbox
+namespace Hoardr.DeltaJob
 {
     public interface IDropboxApi
     {
         [Post("/delta")]
         [Headers("Authorization: Bearer")]
         Task<DeltaResponse> Delta([Body(BodySerializationMethod.UrlEncoded)] DeltaRequest request);
-
-        [Post("/delta/latest_cursor")]
-        [Headers("Authorization: Bearer")]
-        Task<DeltaLatestCursorResponse> DeltaLatestCursor();
     }
 
     public class DeltaRequest
     {
         [AliasAs("cursor")]
         public string Cursor { get; set; }
+
+        [AliasAs("path_prefix")]
+        public string PathPrefix { get; set; }
     }
 
     public class DeltaResponse
@@ -94,11 +93,5 @@ namespace Hoardr.Api.Dropbox
         {
             return typeof(DeltaResponse.DeltaEntry).IsAssignableFrom(objectType);
         }
-    }
-
-    public class DeltaLatestCursorResponse
-    {
-        [JsonProperty("cursor")]
-        public string Cursor { get; set; }
     }
 }

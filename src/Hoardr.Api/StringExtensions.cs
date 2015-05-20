@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Web;
 
-namespace Hoardr.Api.Dropbox
+namespace Hoardr.Api
 {
     public static class StringExtensions
     {
@@ -19,7 +18,5 @@ namespace Hoardr.Api.Dropbox
                 return BitConverter.ToString(hashmessage).Replace("-", "").ToLower(); // hex
             }
         }
-
-
     }
 }

@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks.Dataflow;
-using Nancy;
+﻿using Nancy;
 using Nancy.Extensions;
 using Nancy.ModelBinding;
 using Nancy.Security;
 
-namespace Hoardr.Api.Dropbox
+namespace Hoardr.Api
 {
     public class WebhookModule : NancyModule
     {
         public WebhookModule(
             IRequestVerifier requestVerifier,
-            IDeltaWorker deltaWorker) 
+            IDeltaQueue deltaQueue) 
             : base("/dropbox/webhook")
         {
             //this.RequiresHttps();
@@ -39,7 +35,7 @@ namespace Hoardr.Api.Dropbox
                 {
                     foreach (var dropboxUserId in body.Delta.Users)
                     {
-                        await deltaWorker.Ping(dropboxUserId);
+                        await deltaQueue.Enqueue(dropboxUserId);
                     }
                 }
                 return HttpStatusCode.OK;

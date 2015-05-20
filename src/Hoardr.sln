@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hoardr.Api", "Hoardr.Api\Ho
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hoardr.FileJob", "Hoardr.FileJob\Hoardr.FileJob.csproj", "{BFDF1194-118D-4835-956D-D345EB904E99}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hoardr.DeltaJob", "Hoardr.DeltaJob\Hoardr.DeltaJob.csproj", "{F8CC74B3-B2A5-422B-80D1-3D97587BF663}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hoardr.Common", "Hoardr.Common\Hoardr.Common.csproj", "{13672B54-219F-4565-9BFA-2340710DDF78}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{BFDF1194-118D-4835-956D-D345EB904E99}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BFDF1194-118D-4835-956D-D345EB904E99}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BFDF1194-118D-4835-956D-D345EB904E99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8CC74B3-B2A5-422B-80D1-3D97587BF663}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8CC74B3-B2A5-422B-80D1-3D97587BF663}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8CC74B3-B2A5-422B-80D1-3D97587BF663}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8CC74B3-B2A5-422B-80D1-3D97587BF663}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13672B54-219F-4565-9BFA-2340710DDF78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13672B54-219F-4565-9BFA-2340710DDF78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13672B54-219F-4565-9BFA-2340710DDF78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13672B54-219F-4565-9BFA-2340710DDF78}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

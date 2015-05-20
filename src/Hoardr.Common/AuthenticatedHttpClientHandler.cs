@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Hoardr.Api.Dropbox
+namespace Hoardr.Common
 {
     public class AuthenticatedHttpClientHandler : HttpClientHandler
     {
-        private readonly string _bearerToken;
+        private readonly string _token;
 
-        public AuthenticatedHttpClientHandler(string bearerToken)
+        public AuthenticatedHttpClientHandler(string token)
         {
-            _bearerToken = bearerToken;
+            _token = token;
         }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -22,7 +19,7 @@ namespace Hoardr.Api.Dropbox
             var auth = request.Headers.Authorization;
             if (auth != null)
             {
-                request.Headers.Authorization = new AuthenticationHeaderValue(auth.Scheme, _bearerToken);
+                request.Headers.Authorization = new AuthenticationHeaderValue(auth.Scheme, _token);
             }
             return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
         }

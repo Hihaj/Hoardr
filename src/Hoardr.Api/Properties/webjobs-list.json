@@ -3,6 +3,9 @@
   "WebJobs": [
     {
       "filePath": "../Hoardr.FileJob/Hoardr.FileJob.csproj"
+    },
+    {
+      "filePath": "../Hoardr.DeltaJob/Hoardr.DeltaJob.csproj"
     }
   ]
 }
