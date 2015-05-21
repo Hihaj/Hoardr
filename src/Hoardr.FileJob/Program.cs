@@ -34,9 +34,10 @@ namespace Hoardr.FileJob
 
         public async static Task DownloadFile(
             [QueueTrigger("files")] PendingFile pendingFile,
-            [Blob("{DropboxUserId}/{FilePath}")] ICloudBlob destinationBlob,
+            [Blob("{DropboxUserId}/{FilePath}", FileAccess.Write)] ICloudBlob destinationBlob,
             TextWriter logger)
         {
+            pendingFile.FilePath = pendingFile.FilePath.TrimStart('/');
             var appSettings = new AppSettings();
             var dropboxContentApi = RestService.For<IDropboxContentApi>(
                 new HttpClient(new AuthenticatedHttpClientHandler(appSettings.DropboxAccessToken))
