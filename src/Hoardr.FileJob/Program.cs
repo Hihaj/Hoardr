@@ -56,14 +56,15 @@ namespace Hoardr.FileJob
             {
                 var metadata = JsonConvert.DeserializeObject<DropboxFileMetadata>(
                     response.Headers.GetValues("x-dropbox-metadata").FirstOrDefault());
-                var contentType = response.Headers.GetValues("Content-Type").FirstOrDefault();
-                if (!string.IsNullOrEmpty(contentType))
+                using (var sourceStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
                 {
-                    destinationBlob.Properties.ContentType = contentType;
-                    destinationBlob.SetProperties();
+                    await destinationBlob.UploadFromStreamAsync(sourceStream).ConfigureAwait(false);
                 }
-                var sourceStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                await destinationBlob.UploadFromStreamAsync(sourceStream).ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(metadata.MimeType))
+                {
+                    destinationBlob.Properties.ContentType = metadata.MimeType;
+                    await destinationBlob.SetPropertiesAsync().ConfigureAwait(false);
+                }
             });
 
             requester.LinkTo(downloader, new DataflowLinkOptions

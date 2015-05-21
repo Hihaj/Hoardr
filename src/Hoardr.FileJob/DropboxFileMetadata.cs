@@ -26,5 +26,8 @@ namespace Hoardr.FileJob
 
         [JsonProperty("modified")]
         public DateTime? Modified { get; set; }
+
+        [JsonProperty("mime_type")]
+        public string MimeType { get; set; }
     }
 }
