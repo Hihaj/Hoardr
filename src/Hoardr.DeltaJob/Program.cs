@@ -54,7 +54,7 @@ namespace Hoardr.DeltaJob
                 // Queue Dropbox files for download.
                 var filePaths = response.Entries
                                         .Where(x => x.Metadata != null && !x.Metadata.IsFolder)
-                                        .Select(x => x.Path);
+                                        .Select(x => x.Path.TrimStart('/'));
 
                 foreach (var filePath in filePaths)
                 {

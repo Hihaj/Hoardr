@@ -37,7 +37,6 @@ namespace Hoardr.FileJob
             [Blob("{DropboxUserId}/{FilePath}")] ICloudBlob destinationBlob,
             TextWriter logger)
         {
-            pendingFile.FilePath = pendingFile.FilePath.TrimStart('/');
             var appSettings = new AppSettings();
             var dropboxContentApi = RestService.For<IDropboxContentApi>(
                 new HttpClient(new AuthenticatedHttpClientHandler(appSettings.DropboxAccessToken))
