@@ -34,7 +34,7 @@ namespace Hoardr.FileJob
 
         public async static Task DownloadFile(
             [QueueTrigger("files")] PendingFile pendingFile,
-            [Blob("{DropboxUserId}/{FilePath}", FileAccess.Write)] ICloudBlob destinationBlob,
+            [Blob("{DropboxUserId}/{FilePath}")] ICloudBlob destinationBlob,
             TextWriter logger)
         {
             pendingFile.FilePath = pendingFile.FilePath.TrimStart('/');
