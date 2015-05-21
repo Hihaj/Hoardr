@@ -21,7 +21,10 @@ namespace Hoardr.FileJob
             // Important: since processing of Dropbox deltas is required
             // to be sequential, we can not allow for parallel jobs
             // (per Dropbox user).
+            var appSettings = new AppSettings();
             var config = new JobHostConfiguration();
+            config.StorageConnectionString = appSettings.AzureStorageConnectionString;
+            config.DashboardConnectionString = appSettings.AzureStorageConnectionString;
             config.Queues.BatchSize = 1;
             config.Queues.MaxDequeueCount = 5;
             config.Queues.MaxPollingInterval = TimeSpan.FromSeconds(30);
@@ -31,7 +34,7 @@ namespace Hoardr.FileJob
 
         public async static Task DownloadFile(
             [QueueTrigger("files")] PendingFile pendingFile,
-            [Blob("{FilePath}", FileAccess.Write)] ICloudBlob destinationBlob,
+            [Blob("{DropboxUserId}/{FilePath}")] ICloudBlob destinationBlob,
             TextWriter logger)
         {
             var appSettings = new AppSettings();

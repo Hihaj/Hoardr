@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Web;
+using Microsoft.WindowsAzure;
 
 namespace Hoardr.Api
 {
@@ -13,8 +14,8 @@ namespace Hoardr.Api
 
         public AppSettings()
         {
-            AzureStorageConnectionString = ConfigurationManager.AppSettings["azure:StorageConnectionString"];
-            DropboxApiSecret = ConfigurationManager.AppSettings["dropbox:ApiSecret"];
+            AzureStorageConnectionString = CloudConfigurationManager.GetSetting("azure:StorageConnectionString");
+            DropboxApiSecret = CloudConfigurationManager.GetSetting("dropbox:ApiSecret");
         }
     }
 }

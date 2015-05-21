@@ -20,7 +20,10 @@ namespace Hoardr.DeltaJob
             // Important: since processing of Dropbox deltas is required
             // to be sequential, we can not allow for parallel jobs
             // (per Dropbox user).
+            var appSettings = new AppSettings();
             var config = new JobHostConfiguration();
+            config.StorageConnectionString = appSettings.AzureStorageConnectionString;
+            config.DashboardConnectionString = appSettings.AzureStorageConnectionString;
             config.Queues.BatchSize = 1;
             config.Queues.MaxDequeueCount = 5;
             config.Queues.MaxPollingInterval = TimeSpan.FromSeconds(30);

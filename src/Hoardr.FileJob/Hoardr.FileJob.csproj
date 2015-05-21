@@ -99,8 +99,12 @@
     <None Include="App.config" />
     <None Include="packages.config" />
     <None Include="Properties\webjob-publish-settings.json" />
-    <None Include="Secret.config" />
-    <None Include="Secret.template.config" />
+    <None Include="Secret.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Secret.template.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Hoardr.Common\Hoardr.Common.csproj">

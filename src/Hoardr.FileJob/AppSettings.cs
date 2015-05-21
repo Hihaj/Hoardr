@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Web;
+using Microsoft.WindowsAzure;
 
 namespace Hoardr.FileJob
 {
@@ -15,10 +16,10 @@ namespace Hoardr.FileJob
 
         public AppSettings()
         {
-            AzureStorageConnectionString = ConfigurationManager.AppSettings["azure:StorageConnectionString"];
-            DropboxApiSecret = ConfigurationManager.AppSettings["dropbox:ApiSecret"];
-            DropboxAccessToken = ConfigurationManager.AppSettings["dropbox:AccessToken"];
-            DropboxContentApiBaseAddress = ConfigurationManager.AppSettings["dropbox:ContentApiBaseAddress"];
+            AzureStorageConnectionString = CloudConfigurationManager.GetSetting("azure:StorageConnectionString");
+            DropboxApiSecret = CloudConfigurationManager.GetSetting("dropbox:ApiSecret");
+            DropboxAccessToken = CloudConfigurationManager.GetSetting("dropbox:AccessToken");
+            DropboxContentApiBaseAddress = CloudConfigurationManager.GetSetting("dropbox:ContentApiBaseAddress");
         }
     }
 }
