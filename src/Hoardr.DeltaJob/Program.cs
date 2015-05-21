@@ -63,11 +63,13 @@ namespace Hoardr.DeltaJob
                         DropboxUserId = pendingDelta.DropboxUserId,
                         FilePath = filePath
                     }).ConfigureAwait(false);
+                    await logger.WriteLineAsync(string.Format("Enqueued {0} for download.", filePath)).ConfigureAwait(false);
                 }
 
                 // Update delta cursor.
                 await updatedDeltaCursors.AddAsync(new DeltaCursorEntity(pendingDelta.DropboxUserId, response.Cursor)).ConfigureAwait(false);
-                
+                await logger.WriteLineAsync(string.Format("Updated delta cursor for user {0}.", pendingDelta.DropboxUserId)).ConfigureAwait(false);
+
                 // If there are more delta result pages, add a new pending delta for the user.
                 if (response.HasMore)
                 {

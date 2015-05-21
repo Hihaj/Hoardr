@@ -75,6 +75,7 @@ namespace Hoardr.FileJob
             await requester.SendAsync(pendingFile.FilePath).ConfigureAwait(false);
             requester.Complete();
             await downloader.Completion.ConfigureAwait(false);
+            await logger.WriteLineAsync(string.Format("Sucessfully stored {0}.", pendingFile.FilePath)).ConfigureAwait(false);
         }
     }
 }
