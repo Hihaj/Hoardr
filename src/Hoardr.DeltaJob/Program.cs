@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -7,6 +9,7 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using Hoardr.Common;
 using Hoardr.Common.Messages;
+using Microsoft.ApplicationInsights;
 using Microsoft.Azure.WebJobs;
 using Microsoft.WindowsAzure.Storage.Table;
 using Refit;
@@ -15,6 +18,8 @@ namespace Hoardr.DeltaJob
 {
     public class Program
     {
+        private static TelemetryClient _telemetryClient;
+
         public static void Main(string[] args)
         {
             // Configure and start the Azure WebJobs host.
@@ -22,12 +27,20 @@ namespace Hoardr.DeltaJob
             // to be sequential, we can not allow for parallel jobs
             // (per Dropbox user).
             var appSettings = new AppSettings();
+            _telemetryClient = new TelemetryClient
+            {
+                Context =
+                {
+                    InstrumentationKey = appSettings.AzureInstrumentationKey
+                }
+            };
             var config = new JobHostConfiguration();
             config.StorageConnectionString = appSettings.AzureStorageConnectionString;
             config.DashboardConnectionString = appSettings.AzureStorageConnectionString;
             config.Queues.BatchSize = 1;
             config.Queues.MaxDequeueCount = 5;
             config.Queues.MaxPollingInterval = TimeSpan.FromSeconds(30);
+            _telemetryClient.TrackEvent("DeltaJobStarted");
             var jobHost = new JobHost(config);
             jobHost.RunAndBlock();
         }
@@ -39,6 +52,8 @@ namespace Hoardr.DeltaJob
             [Queue("files")] IAsyncCollector<PendingFile> filesToDownload,
             TextWriter logger)
         {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
             var appSettings = new AppSettings();
             var dropboxApi = RestService.For<IDropboxApi>(
                 new HttpClient(new AuthenticatedHttpClientHandler(appSettings.DropboxAccessToken))
@@ -71,6 +86,13 @@ namespace Hoardr.DeltaJob
                         FilePath = filePath
                     }).ConfigureAwait(false);
                     await logger.WriteLineAsync(string.Format("Enqueued {0} for download.", filePath)).ConfigureAwait(false);
+                    _telemetryClient.TrackEvent(
+                        "FileEnqueued",
+                        properties: new Dictionary<string, string>
+                        {
+                            { "dropboxUserId", pendingDelta.DropboxUserId.ToString() },
+                            { "filePath", filePath }
+                        });
                 }
 
                 // Update delta cursor.
@@ -101,6 +123,18 @@ namespace Hoardr.DeltaJob
             }).ConfigureAwait(false);
             downloader.Complete();
             await responseProcessor.Completion.ConfigureAwait(false);
+
+            stopwatch.Stop();
+            _telemetryClient.TrackEvent(
+                "DeltaProcessed",
+                properties: new Dictionary<string, string>
+                {
+                    { "dropboxUserId", pendingDelta.DropboxUserId.ToString() }
+                },
+                metrics: new Dictionary<string, double>
+                {
+                    { "elapsedMilliseconds", stopwatch.ElapsedMilliseconds }
+                });
         }
     }
 }

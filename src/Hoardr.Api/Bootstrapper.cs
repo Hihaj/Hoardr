@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using Microsoft.ApplicationInsights;
 using Microsoft.WindowsAzure.Storage;
 using Nancy;
 using Nancy.Bootstrapper;
@@ -21,6 +22,19 @@ namespace Hoardr.Api
             container.Register(appSettings);
             container.Register(CloudStorageAccount.Parse(appSettings.AzureStorageConnectionString));
             container.Register<JsonSerializer, CustomJsonSerializer>();
+        }
+
+        protected override void ConfigureRequestContainer(TinyIoCContainer container, NancyContext context)
+        {
+            base.ConfigureRequestContainer(container, context);
+            var telemetryClient = new TelemetryClient
+            {
+                Context =
+                {
+                    InstrumentationKey = container.Resolve<AppSettings>().AzureInstrumentationKey
+                }
+            };
+            container.Register(telemetryClient);
         }
     }
 }

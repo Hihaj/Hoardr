@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -6,6 +8,7 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using Hoardr.Common;
 using Hoardr.Common.Messages;
+using Microsoft.ApplicationInsights;
 using Microsoft.Azure.WebJobs;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Newtonsoft.Json;
@@ -15,6 +18,8 @@ namespace Hoardr.FileJob
 {
     public class Program
     {
+        private static TelemetryClient _telemetryClient;
+
         public static void Main(string[] args)
         {
             // Configure and start the Azure WebJobs host.
@@ -22,12 +27,20 @@ namespace Hoardr.FileJob
             // to be sequential, we can not allow for parallel jobs
             // (per Dropbox user).
             var appSettings = new AppSettings();
+            _telemetryClient = new TelemetryClient
+            {
+                Context =
+                {
+                    InstrumentationKey = appSettings.AzureInstrumentationKey
+                }
+            };
             var config = new JobHostConfiguration();
             config.StorageConnectionString = appSettings.AzureStorageConnectionString;
             config.DashboardConnectionString = appSettings.AzureStorageConnectionString;
             config.Queues.BatchSize = 1;
             config.Queues.MaxDequeueCount = 5;
             config.Queues.MaxPollingInterval = TimeSpan.FromSeconds(30);
+            _telemetryClient.TrackEvent("FileJobStarted");
             var jobHost = new JobHost(config);
             jobHost.RunAndBlock();
         }
@@ -37,6 +50,8 @@ namespace Hoardr.FileJob
             [Blob("{DropboxUserId}/{FilePath}")] ICloudBlob destinationBlob,
             TextWriter logger)
         {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
             var appSettings = new AppSettings();
             var dropboxContentApi = RestService.For<IDropboxContentApi>(
                 new HttpClient(new AuthenticatedHttpClientHandler(appSettings.DropboxAccessToken))
@@ -75,6 +90,19 @@ namespace Hoardr.FileJob
             requester.Complete();
             await downloader.Completion.ConfigureAwait(false);
             await logger.WriteLineAsync(string.Format("Sucessfully stored {0}.", pendingFile.FilePath)).ConfigureAwait(false);
+
+            stopwatch.Stop();
+            _telemetryClient.TrackEvent(
+                "FileProcessed",
+                properties: new Dictionary<string, string>
+                {
+                    { "dropboxUserId", pendingFile.DropboxUserId.ToString() },
+                    { "filePath", pendingFile.FilePath }
+                },
+                metrics: new Dictionary<string, double>
+                {
+                    { "elapsedMilliseconds", stopwatch.ElapsedMilliseconds }
+                });
         }
     }
 }
